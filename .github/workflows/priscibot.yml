@@ -14,14 +14,14 @@ permissions:
 jobs:
     test:
       name: Terraform Test
-      uses: .github/workflows/terraform-test.yml@main
+      uses: ./github/workflows/terraform-test.yml@main
       secrets: inherit
       with:
         docs_output: "../README.md"
   
     set-matrix:
       name: Set Matrix
-      uses: .github/workflows/set-matrix.yml@main
+      uses: ./github/workflows/set-matrix.yml@main
       with:
         json_path: 'environments.json'
         env_deploy_list: '["main"]'
@@ -32,7 +32,7 @@ jobs:
       strategy:
         max-parallel: 1
         matrix: ${{fromJson(needs.set-matrix.outputs.matrix)}}
-      uses: .github/workflows/terraform-plan.yml@main
+      uses: ./github/workflows/terraform-plan.yml@main
       secrets: inherit
       with:
         tf_build_path: terraform/build/
@@ -48,7 +48,7 @@ jobs:
       strategy:
         max-parallel: 1
         matrix: ${{fromJson(needs.set-matrix.outputs.matrix)}}
-      uses: .github/workflows/terraform-apply.yml@main
+      uses: ./github/workflows/terraform-apply.yml@main
       secrets: inherit
       with:
         environment: ${{ matrix.env }}
