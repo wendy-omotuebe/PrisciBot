@@ -1,0 +1,104 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      env_deploy_list:
+        type: string
+        required: false
+        default: '["dev"]'
+      region:
+        required: True
+        type: string
+      role_to_assume:
+        type: string
+        required: true
+      role_to_assume_destination:
+        type: string
+        required: false
+      tf_build_path:
+        required: false
+        type: string
+        default: 'terraform/build/'
+      tf_deploy_path:
+        required: false
+        type: string
+        default: 'terraform/deploy/'
+      tf_destroy_all_resources:
+        required: False
+        type: string
+        default: False
+      tf_version:
+        type: string
+        required: false
+        default: 1.3.9
+      tf_dry_run:
+        type: boolean
+        required: false
+        default: false
+      container_version:
+        type: string
+        required: false
+        default: ''
+      source_ecr_repository:
+        type: string
+        required: false
+        default: ''
+      destination_ecr_repository:
+        type: string
+        required: false
+        default: ''
+      last_stage:
+        type: string
+        default: 'prod'
+      run_system_tests:
+        type: boolean
+        required: false
+        default: false
+      system_test_service:
+        type: string
+        required: false
+        default: 'all'
+      create_release:
+        type: boolean
+        required: false
+        default: false
+      validate_deployment:
+        type: boolean
+        required: false
+        default: true
+
+jobs:
+  Plan:
+    uses: ./.github/workflows/plan.yml
+    secrets: inherit
+    with:
+      environment: ${{ inputs.environment }}
+      region: ${{ inputs.region }}
+      role_to_assume: ${{ inputs.role_to_assume }}
+      tf_build_path: ${{ inputs.tf_build_path }}
+      tf_deploy_path: ${{ inputs.tf_deploy_path }}
+      container_version: '${{ inputs.container_version }}'
+      tf_destroy_all_resources: ${{ inputs.tf_destroy_all_resources }}
+      tf_version: ${{ inputs.tf_version }}
+
+  Apply:
+    needs: [ Plan ]
+    uses: ./.github/workflows/apply.yml
+    secrets: inherit
+    with:
+      environment: ${{ inputs.environment }}
+      env_deploy_list: ${{ inputs.env_deploy_list }}
+      region: ${{ inputs.region }}
+      role_to_assume: ${{ inputs.role_to_assume }}
+      tf_build_path: ${{ inputs.tf_build_path }}
+      tf_deploy_path: ${{ inputs.tf_deploy_path }}
+      container_version: '${{ inputs.container_version }}'
+      tf_destroy_all_resources: ${{ inputs.tf_destroy_all_resources }}
+      tf_version: ${{ inputs.tf_version }}
+      tf_dry_run: ${{ inputs.tf_dry_run }}
+
+
+
+  
