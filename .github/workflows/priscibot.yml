@@ -25,7 +25,7 @@ jobs:
       strategy:
         max-parallel: 1
         matrix: ${{fromJson(needs.set-matrix.outputs.matrix)}}
-      uses: wendy-omotuebe/priscibot/.github/workflows/terraform-plan.yml@main
+      uses: wendy-omotuebe/priscibot/.github/workflows/plan.yml@main
       secrets: inherit
       with:
         tf_build_path: terraform/build/
@@ -41,7 +41,7 @@ jobs:
       strategy:
         max-parallel: 1
         matrix: ${{fromJson(needs.set-matrix.outputs.matrix)}}
-      uses: wendy-omotuebe/priscibot/.github/workflows/terraform-apply.yml@main
+      uses: wendy-omotuebe/priscibot/.github/workflows/apply.yml@main
       secrets: inherit
       with:
         environment: ${{ matrix.env }}
@@ -51,4 +51,3 @@ jobs:
         region: ${{ matrix.region }}
         role_to_assume: ${{ matrix.role_to_assume }}
         #tf_destroy_all_resources: ${{ matrix.tf_destroy_all_resources}} 
-        
