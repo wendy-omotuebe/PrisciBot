@@ -7,7 +7,7 @@ on:
       env_deploy_list:
         type: string
         required: false
-        default: '["dev"]'
+        default: '["main"]'
       region:
         required: True
         type: string
